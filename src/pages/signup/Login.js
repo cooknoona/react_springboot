@@ -6,6 +6,7 @@ import Button from "../../components/ButtonComponents";
 import Input from "../../components/InputComponents";
 import { Container, Items } from "../../components/SignupComponents";
 import AxiosApi from "../../api/AxiosApi";
+import Modal from "../../utils/Modal";
 
 const Img = styled.img`
   width: 180px;
@@ -16,12 +17,25 @@ const Login = () => {
   // State for inputs
   const [inputEmail, setInputEmail] = useState("");
   const [inputPw, setInputPw] = useState("");
-
+  // Modal창을 열고 닫기
+  const [modalOpen, setModalOpen] = useState(false);
+  // Modal창에 대한 문구
+  const [modalContent, setModalContent] = useState("");
   const navigate = useNavigate();
 
   // State for validation
   const [isId, setIsId] = useState(false);
   const [isPw, setIsPw] = useState(false);
+
+  // Modal창을 닫는 함수
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  // Modal창 confirm 동작 함수
+  const confirmModal = () => {
+    console.log("Confirm 버튼이 눌러 졌습니다.");
+  };
 
   // Email and Password change handlers
   const handleInputChange = (e, setState, setValidState) => {
@@ -36,10 +50,11 @@ const Login = () => {
       if (rsp.data) {
         navigate("/home");
       } else {
-        alert("아이디 및 패스워드가 틀립니다.");
+        setModalOpen(true); // 기본값이 false로 되어있는 값을 true로 바꾸어 Modal창이 뜨드록 함
+        setModalContent("아이디 또는 패스워드가 일치 하지 않습니다."); // 내용을 새로 setModalContent에 담아 출력
       }
     } catch (e) {
-      alert("서버가 응답하지 않습니다.");
+      setModalContent("서버가 응답하지 않습니다."); // 내용을 새로 setModalContent에 담아 출력
     }
   };
 
@@ -72,6 +87,9 @@ const Login = () => {
           <span>Sign Up</span>
         </Link>
       </Items>
+      <Modal open={modalOpen} close={closeModal} header="오류" confirm={confirmModal}>
+        {modalContent}
+      </Modal>
     </Container>
   );
 };
